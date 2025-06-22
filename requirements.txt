@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+transformers
+torch
+pymongo
+elasticsearch
+datasets
+docker
+gradio
+streamlit
