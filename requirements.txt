@@ -8,3 +8,4 @@ datasets
 docker
 gradio
 streamlit
+newspaper3k
