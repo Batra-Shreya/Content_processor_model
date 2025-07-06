@@ -2,6 +2,7 @@ from newsapi import NewsApiClient
 import os
 from dotenv import load_dotenv
 import logging
+from newspaper import Article
 load_dotenv()  
 news_api_key = os.getenv("NEWS_API_KEY")
 
@@ -29,7 +30,15 @@ def fetch_news(language, page):
     return top_headlines['articles']
 
 
-
+def fetch_full_article(url):
+    try:
+        article = Article(url)
+        article.download()
+        article.parse()
+        return article.text
+    except Exception as e:
+        print(f"Error scraping {url}: {e}")
+        return None
 
 
 

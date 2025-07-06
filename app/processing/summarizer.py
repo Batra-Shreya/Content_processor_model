@@ -2,7 +2,11 @@ from transformers import pipeline
 import logging
 import os
 from dotenv import load_dotenv
+from ingestion.news_fetch import fetch_full_article
 load_dotenv()
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("flax-community/t5-base-cnn-dm")
 
 # pipe = pipeline("summarization", model="ARTeLab/it5-summarization-ilpost")
 pipe = pipeline("summarization", model="flax-community/t5-base-cnn-dm", device=0)
@@ -35,12 +39,17 @@ def summarize_news(news):
     summarized = []
 
     for article in news:
-        content = article.get('content')
+        # content = article.get('content')
+        content = fetch_full_article(article['url']) or article.get('content')
+        article['content'] = content
         if not content:  # skip if content is None or empty
             continue
         
         try:
-            summary = pipe(content, max_new_tokens=80, min_length=30, do_sample=False)
+            # Truncate long text because of this error --> Token indices sequence length is longer than the specified maximum sequence length for this model (1256 > 512). Running this sequence through the model will result in indexing errors
+            tokens = tokenizer(content, return_tensors="pt", truncation=True, max_length=512)
+            decoded_text = tokenizer.decode(tokens['input_ids'][0], skip_special_tokens=True)
+            summary = pipe(decoded_text, max_new_tokens=80, min_length=30, do_sample=False)
             article['summary'] = summary[0]['summary_text']
             summarized.append(article)
         except Exception as e:

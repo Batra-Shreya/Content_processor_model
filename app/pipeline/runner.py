@@ -7,7 +7,7 @@ import logging
 def ingest_news(language="en", page=1):
     logging.warning("Inside the runner")
     articles = fetch_news(language=language, page=page)
-    articles= articles[:7]
+    articles= articles[:2]
     logging.warning(f"got {len(articles)} from the api")
     new_articles = []
 
