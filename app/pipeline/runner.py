@@ -23,3 +23,8 @@ def ingest_news(language="en", page=1):
     for article in summarized_articles:
         store_article(article)
     return summarized_articles
+
+def search_news(query):
+    logging.warning("Inside the search news")
+    results = search_news(query)
+    return results

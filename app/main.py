@@ -14,3 +14,8 @@ def ingest_news_route():
     results = ingest_news()
     return {"inserted": len(results)}
 
+@app.post("/search_news")
+def search_news_route():
+    logging.warning("Started search news api")
+    results = search_news()
+    return {"results": results}
